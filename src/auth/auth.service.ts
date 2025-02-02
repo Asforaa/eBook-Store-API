@@ -32,6 +32,8 @@ export class AuthService {
           throw new ConflictException('Username is already taken');
         } else if (error.detail.includes('email')) {
           throw new ConflictException('Email is already in use');
+        } else {
+          
         }
       }
 
