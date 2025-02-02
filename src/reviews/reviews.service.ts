@@ -23,7 +23,7 @@ export class ReviewsService {
           id: createReviewDto.bookId,
           status: BookStatus.PUBLISHED,
         });
-        if (!book) throw new NotFoundException('Book not found or not published');
+        if (!book) throw new NotFoundException('Book not found');
     
         // TODO: Check if the buyer has purchased the book (requires orders entity)
         const review = this.reviewsRepository.create({

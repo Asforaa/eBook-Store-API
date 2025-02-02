@@ -1,4 +1,3 @@
-// src/books/books.service.ts
 import {
     Injectable,
     NotFoundException,
@@ -71,7 +70,7 @@ export class BooksService {
     // Get a single book by ID
     // TODO: handle book not being published
     async findOne(id: number): Promise<Book> {
-      const book = await this.booksRepository.findOneBy({ id });
+      const book = await this.booksRepository.findOneBy({ id:id, status: BookStatus.PUBLISHED });
       if (!book) throw new NotFoundException('Book not found');
       return book;
     }

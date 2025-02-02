@@ -22,13 +22,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { id: payload.sub, role: payload.role };
-  //   const user = await this.usersRepository.findOne({ where: { id: payload.sub } });
-  //   if (!user) {
-  //     throw new UnauthorizedException();
-  //   }
+    // console.log('JWT Payload:', payload);
 
-  //   return user
+    if (!payload.sub || !payload.role) {
+      throw new UnauthorizedException('Invalid JWT token');
+    }
+
+    return { id: payload.sub, role: payload.role };
+    
   }
 
   

@@ -15,19 +15,21 @@ export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
   
     canActivate(context: ExecutionContext): boolean {
-      // Get allowed roles from the @Roles decorator
+
       const requiredRoles = this.reflector.get<UserRole[]>(
         ROLES_KEY,
         context.getHandler(),
       );
+
       if (!requiredRoles) return true; // No roles specified = public route
   
       // Get user from request session thing yk
       const request = context.switchToHttp().getRequest();
       const user = request.user;
+
+      const hasRole = requiredRoles.some((role) => user.role === role);
   
-      if (!user) throw new UnauthorizedException('User not authenticated');
-      
-      return requiredRoles.some((role) => user.role === role);
+      return hasRole;
+
     }
 }
