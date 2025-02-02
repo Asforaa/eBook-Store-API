@@ -46,6 +46,6 @@ export class ReviewsController {
     @Roles(UserRole.BUYER)
     async deleteReview(@Param('id') id: number, @Req() req) {
       await this.reviewsService.delete(id, req.user);
-      return {"message": "User with ID 1 deleted successfully"}
+      return {  "message": "User with ID 1 deleted successfully"}
     }
 }
