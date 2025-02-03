@@ -1,9 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { comparePasswords, hashPassword } from 'src/common/utils/hash.util';
 import { CreateUserDto } from 'src/users/dtos/createUser.dto';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRole } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -21,6 +21,10 @@ export class AuthService {
       ...createUserDto,
       password: hashedPassword,
     });
+
+    if ([UserRole.ADMIN, UserRole.PUBLISHER, UserRole.SUPER_ADMIN].includes(user.role)){
+      throw new ForbiddenException('New users can only signup as buyer or author')
+    }
 
     try {
       await this.usersRepository.save(user);

@@ -1,32 +1,37 @@
-// src/books/books.controller.ts
 import {
     Controller,
     Get,
     Post,
     Patch,
     Delete,
-    Body,
+    Body,   
     Param,
     Req,
     UseGuards,
-    ForbiddenException,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dtos/createBook.dto';
 import { UpdateBookDto } from './dtos/updateBook.dto';
 import { UpdateBookStatusDto } from './dtos/updateBookStatus.dto';
 import { UserRole } from 'src/users/entities/user.entity';
-import { BookStatus } from './entities/book.entity';  
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
 
 @UseGuards(JwtAuthGuard)
-@Controller('books')
+@Controller({ path:'books', version: '1' })
 export class BooksController {
     constructor(private readonly booksService: BooksService) {}
-  
+    
+    // super admin stuff
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.SUPER_ADMIN)
+    async deleteBook(@Param('id') id: number) {
+      return this.booksService.delete(id);
+    }
+
     // --- Author Endpoints ---
     @Post()
     @UseGuards(RolesGuard)
@@ -37,34 +42,22 @@ export class BooksController {
   
     @Patch(':id')
     @UseGuards(RolesGuard)
-    @Roles(UserRole.AUTHOR)
-    async updateBook(
-      @Param('id') id: number,
-      @Body() updateBookDto: UpdateBookDto,
-      @Req() req,
-    ) {
+    @Roles(UserRole.AUTHOR, UserRole.ADMIN)
+    async updateBook(@Param('id') id: number, @Body() updateBookDto: UpdateBookDto, @Req() req) {
       return this.booksService.update(id, updateBookDto, req.user);
     }
   
     // --- Publisher Endpoints ---
     @Patch(':id/status')
     @UseGuards(RolesGuard)
-    @Roles(UserRole.PUBLISHER)
-    async updateBookStatus(
-      @Param('id') id: number,
-      @Body() updateBookStatusDto: UpdateBookStatusDto,
-      @Req() req,
-    ) {
-      return this.booksService.updateStatus(
-        id,
-        updateBookStatusDto.status,
-        req.user,
-      );
+    @Roles(UserRole.PUBLISHER, UserRole.ADMIN)
+    async updateBookStatus(@Param('id') id: number, @Body() updateBookStatusDto: UpdateBookStatusDto, @Req() req) {
+      return this.booksService.updateStatus(id, updateBookStatusDto.status, req.user);
     }
 
     @Get('/binding')
     @UseGuards(RolesGuard)
-    @Roles(UserRole.PUBLISHER)
+    @Roles(UserRole.PUBLISHER, UserRole.ADMIN)
     async getAllBindingBooks() {
       return this.booksService.findAllBinding();
     }

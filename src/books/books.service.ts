@@ -63,15 +63,36 @@ export class BooksService {
     }
 
     // get all binding
-    async findAllBinding(): Promise<Book[]> {
-      return this.booksRepository.find({ where: { status: BookStatus.BINDING } });
+    async findAllBinding(): Promise<Book[] | { message: string }> {
+      const books = await this.booksRepository.find({ where: { status: BookStatus.BINDING } });
+    
+      if (!books.length) {
+        return { message: 'No books are currently in binding status' };
+      }
+    
+      return books;
     }
   
     // Get a single book by ID
-    // TODO: handle book not being published
     async findOne(id: number): Promise<Book> {
       const book = await this.booksRepository.findOneBy({ id:id, status: BookStatus.PUBLISHED });
       if (!book) throw new NotFoundException('Book not found');
       return book;
     }
+
+
+    async delete(id: number): Promise<{ message:string }> {
+      const book = await this.booksRepository.findOneBy({ id });
+      if (!book) throw new NotFoundException('Book not found');
+      
+      try {
+        await this.booksRepository.remove(book);
+        return { message: 'Book Deleted Successfully' };
+      } 
+      catch (error) {
+        throw new Error(error)
+      }
+
+    }
+
   }

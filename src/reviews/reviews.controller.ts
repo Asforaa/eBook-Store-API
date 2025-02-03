@@ -19,7 +19,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 
 
 @UseGuards(JwtAuthGuard)
-@Controller('reviews')
+@Controller({ path:'reviews', version: '1' })
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {}
   
@@ -43,7 +43,7 @@ export class ReviewsController {
   
     @Delete(':id')
     @UseGuards(RolesGuard)
-    @Roles(UserRole.BUYER)
+    @Roles(UserRole.BUYER, UserRole.ADMIN)
     async deleteReview(@Param('id') id: number, @Req() req) {
       await this.reviewsService.delete(id, req.user);
       return {  "message": "User with ID 1 deleted successfully"}

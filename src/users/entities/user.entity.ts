@@ -15,6 +15,8 @@ export enum UserRole {
 	AUTHOR = 'author',
 	BUYER = 'buyer',
 	PUBLISHER = 'publisher',
+	ADMIN = 'admin',
+	SUPER_ADMIN = 'super_admin'
 }
 
 @Entity()

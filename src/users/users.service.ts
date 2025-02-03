@@ -1,6 +1,6 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
@@ -13,6 +13,45 @@ export class UsersService {
 		@InjectRepository(User)
 		private readonly usersRepository: Repository<User>
 	) {}
+
+
+	async updateRole( userId: number, newRole: UserRole, currentUser: User): Promise<User> {
+		const targetUser = await this.usersRepository.findOneBy({ id: userId });
+		if (!targetUser) throw new NotFoundException('User not found');
+	
+		// Admins can only assign author/publisher roles
+		if (
+		currentUser.role === UserRole.ADMIN &&
+		![UserRole.AUTHOR, UserRole.PUBLISHER, UserRole.BUYER].includes(newRole)
+		) {
+		throw new ForbiddenException(
+			'Admins can only assign author, publisher or buyer roles',
+		);
+		}
+	
+		// Prevent admins from modifying other admins/super_admins
+		if (
+			currentUser.role === UserRole.ADMIN 
+			&& [UserRole.ADMIN, UserRole.SUPER_ADMIN].includes(targetUser.role)
+		) {
+		throw new ForbiddenException(
+			'Admins cannot modify roles of other admins or super admins',
+		);
+		}
+	
+		// Super admins can assign any role except demoting other super admins
+		if (
+		currentUser.role === UserRole.SUPER_ADMIN &&
+		targetUser.role === UserRole.SUPER_ADMIN &&
+		newRole !== UserRole.SUPER_ADMIN
+		) {
+		throw new ForbiddenException('Cannot demote a super admin');
+		}
+	
+		targetUser.role = newRole;
+		return this.usersRepository.save(targetUser);
+	}
+	
 
 	async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
 		// hash for security yk
