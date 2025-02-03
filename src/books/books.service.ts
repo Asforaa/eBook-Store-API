@@ -28,7 +28,7 @@ export class BooksService {
       return this.booksRepository.save(book);
     }
   
-
+    // TODO: fix sending all the author data in the request, including the password of them
     async update(id: number, updateBookDto: UpdateBookDto, author: User): Promise<Book> {
       const book = await this.booksRepository.findOne({
         where: { id },

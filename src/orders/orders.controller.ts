@@ -17,7 +17,7 @@ import { CreateOrderDto } from './dtos/createOrder.dto';
 import { OrderResponseDto } from './dtos/orderResponse.dto';
   
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller({path: 'orders', version: '1'})
+@Controller({path: 'orders', version: '2'})
   export class OrdersController {
     constructor(private readonly ordersService: OrdersService) {}
   
@@ -29,25 +29,24 @@ import { OrderResponseDto } from './dtos/orderResponse.dto';
   
     @Get()
     @Roles(UserRole.BUYER)
-    async getMyOrders(@Req() req): Promise<OrderResponseDto[]> {
+    async getMyOrders(@Req() req): Promise<OrderResponseDto[] | {message: string}> {
       return this.ordersService.getOrdersByUser(req.user);
     }
-  
-    @Get(':id')
-    @Roles(UserRole.BUYER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
-    async getOrderById(
-      @Param('id', ParseIntPipe) id: number,
-      @Req() req,
-    ): Promise<OrderResponseDto> {
-      return this.ordersService.getOrderById(id, req.user);
-    }
-
+    
     // sales tracking routes
     @Get('sales')
     @Roles(UserRole.ADMIN, UserRole.PUBLISHER)
     async getAllSales() {
       return this.ordersService.getAllSales();
     }
+
+
+    @Get(':id')
+    @Roles(UserRole.BUYER, UserRole.ADMIN, UserRole.SUPER_ADMIN)
+    async getOrderById(@Param('id') id: string, @Req() req): Promise<OrderResponseDto> {
+      return this.ordersService.getOrderById(id, req.user);
+    }
+
 
     @Get('sales/:authorId')
     @Roles(UserRole.AUTHOR, UserRole.PUBLISHER, UserRole.ADMIN)

@@ -4,7 +4,7 @@ import { OrderStatus } from '../entities/order.entity';
 @Exclude()
 export class OrderResponseDto {
   @Expose()
-  id: number;
+  id: string;
 
   @Expose()
   total: number;

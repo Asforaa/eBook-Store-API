@@ -1,13 +1,13 @@
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-    CreateDateColumn,
-    UpdateDateColumn,
-    ManyToMany,
-    JoinTable,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Book } from '../../books/entities/book.entity';
@@ -20,8 +20,8 @@ CANCELLED = 'cancelled',
   
   @Entity()
   export class Order {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
   
     @ManyToOne(() => User, (user) => user.orders)
     @JoinColumn()
@@ -42,4 +42,4 @@ CANCELLED = 'cancelled',
   
     @UpdateDateColumn()
     updatedAt: Date;
-  }
+  } 

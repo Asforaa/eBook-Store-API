@@ -19,7 +19,7 @@ export class OrdersService {
       private ordersRepository: Repository<Order>,
       @InjectRepository(Book)
       private booksRepository: Repository<Book>,
-      @InjectRepository(Book)
+      @InjectRepository(User)
       private usersRepository: Repository<User>,
 
     ) {}
@@ -62,18 +62,23 @@ export class OrdersService {
       return this.ordersRepository.save(order);
     }
   
-    async getOrdersByUser(user: User): Promise<Order[]> {
-      return this.ordersRepository.find({
+    async getOrdersByUser(user: User): Promise<Order[] | {message: string}> {
+      
+      const orders = await this.ordersRepository.find({
         where: { buyer: { id: user.id } },
         relations: ['books'],
       });
+
+      if (!orders.length) return {message: 'You dont have any orders yet'};
+      return orders;
     }
   
-    async getOrderById(id: number, user: User): Promise<Order> {
+    async getOrderById(id: string, user: User): Promise<Order> {
       const order = await this.ordersRepository.findOne({
         where: { id },
         relations: ['books', 'buyer'],
       });
+      
       if (!order) throw new NotFoundException('Order not found');
       if (
         user.role !== UserRole.ADMIN &&
@@ -97,8 +102,13 @@ export class OrdersService {
         .addSelect('SUM(order.total)', 'totalSales')
         .addSelect('COUNT(order.id)', 'totalOrders')
         .addSelect('author.username', 'authorUsername')
+        .addSelect('author.id', 'authorId')
         .groupBy('book.id')
+        .addGroupBy('author.username')  
+        .addGroupBy('author.id')        
         .getRawMany();
+    
+  
     
       if (!sales || !sales.length) {
         return { message: 'No sales data available' };
@@ -111,6 +121,7 @@ export class OrdersService {
         totalSales: parseFloat(sale.totalSales),
         totalOrders: parseInt(sale.totalOrders),
         authorUsername: sale.authorUsername,
+        authorId: parseInt(sale.authorId),
       }));
     }
     
@@ -119,7 +130,7 @@ export class OrdersService {
       const existingAuthor = await this.usersRepository.findOne({
         where: { id: authorId },
       });
-    
+      
       if (!existingAuthor) {
         throw new NotFoundException(`Author with ID ${authorId} not found`);
       }
@@ -135,8 +146,8 @@ export class OrdersService {
         .addSelect('SUM(order.total)', 'totalSales')
         .addSelect('COUNT(order.id)', 'totalOrders')
         .addSelect('author.username', 'authorUsername')
-        .addSelect('author.id', 'authorId')
         .groupBy('book.id')
+        .addGroupBy('author.username')
         .getRawMany();
     
       if (!sales || !sales.length) {
