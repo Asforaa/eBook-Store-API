@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
 import { Book } from 'src/books/entities/book.entity';
+import { Order } from 'src/orders/entities/order.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import {
 	Entity,
@@ -43,6 +44,9 @@ export class User {
 
 	@OneToMany(() => Book, (book) => book.author)
 	authoredBooks: Book[];
+	
+	@OneToMany(() => Order, (order) => order.buyer)
+	orders: Order[];
 
 	@OneToMany(() => Review, (review) => review.buyer)
 	reviews: Review[];
