@@ -17,6 +17,24 @@ export class ReviewsService {
         private readonly booksRepository: Repository<Book>,
 
     ){}
+    
+    async getAllReviews(): Promise<Review[]> {
+      return this.reviewsRepository.find({ relations: ['buyer', 'book'] });
+    }
+
+    async getReviewsByBookId(bookId: number): Promise<Review[]> {
+      const book = await this.booksRepository.findOne({ where: { id: bookId } });
+
+      if (!book) {
+          throw new NotFoundException('Book not found');
+      }
+
+      return this.reviewsRepository.find({
+          where: { book: { id: bookId } },
+          relations: ['buyer', 'book'],
+      });
+    
+    }
 
     async create(createReviewDto: CreateReviewDto, buyer: User): Promise<Review> {
         const book = await this.booksRepository.findOneBy({

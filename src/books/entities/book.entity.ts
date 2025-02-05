@@ -35,7 +35,7 @@ export class Book {
 
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn()
-  publishedBy?: User;
+  publishedBy?: Partial<User>;
 
   @OneToMany(() => Review, (review) => review.book, { cascade: true })
   reviews: Review[];

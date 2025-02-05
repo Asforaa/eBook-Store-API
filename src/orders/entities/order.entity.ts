@@ -25,7 +25,7 @@ CANCELLED = 'cancelled',
   
     @ManyToOne(() => User, (user) => user.orders)
     @JoinColumn()
-    buyer: User;
+    buyer: Partial<User>;
   
     @ManyToMany(() => Book)
     @JoinTable()

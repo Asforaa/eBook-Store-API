@@ -16,6 +16,8 @@ export class UsersService {
 
 
 	async updateRole( userId: number, newRole: UserRole, currentUser: User): Promise<User> {
+		
+		// can use findoneByOrFail here
 		const targetUser = await this.usersRepository.findOneBy({ id: userId });
 		if (!targetUser) throw new NotFoundException('User not found');
 	
@@ -54,6 +56,38 @@ export class UsersService {
 	
 
 	async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
+
+		// try {
+		// 	await this.usersRepository.save(user);
+		// }
+		// catch (error) {
+		// 	if (error.code === '23505') {
+		// 		// 23505 is the PostgreSQL error code for unique constraint violations
+		// 		if (error.detail.includes('username')) {
+		// 			throw new ConflictException('Username is already taken');
+		// 		} else if (error.detail.includes('email')) {
+		// 			throw new ConflictException('Email is already in use');
+		// 		}
+		// 	}
+
+		// 	throw error;
+		// }
+
+		// a cleaner way to check if the username or email already exists using typeORM
+		// refactored: now this compares using the data from the DTO instead of creating a new user and comparing using it
+		const existingUser = await this.usersRepository.findOne({
+			where: [{ username: createUserDto.username }, { email: createUserDto.email }],
+		  });
+		
+		  if (existingUser) {
+			if (existingUser.username === createUserDto.username) {
+			  throw new ConflictException('Username is already taken');
+			}
+			if (existingUser.email === createUserDto.email) {
+			  throw new ConflictException('Email is already in use');
+			}
+		}
+
 		// hash for security yk
 		const hashedPassword = await hashPassword(createUserDto.password);
 		const user = this.usersRepository.create({
@@ -61,21 +95,8 @@ export class UsersService {
 			password: hashedPassword,
 		});
 
-		try {
-			await this.usersRepository.save(user);
-		}
-		catch (error) {
-			if (error.code === '23505') {
-				// 23505 is the PostgreSQL error code for unique constraint violations
-				if (error.detail.includes('username')) {
-					throw new ConflictException('Username is already taken');
-				} else if (error.detail.includes('email')) {
-					throw new ConflictException('Email is already in use');
-				}
-			}
-
-			throw error;
-		}
+		// save the user in the db
+		await this.usersRepository.save(user);
 
 		// Exclude password hash from the response, because why would I send it lmao
 		return instanceToPlain(user);
@@ -118,21 +139,25 @@ export class UsersService {
 	  }
 
 	async remove(id: number): Promise<{message: string}> {
-		try {
-			const result = await this.usersRepository.delete(id);
+		
+		// removed the try-catch block because its necessary to handle the same error twice
+		const result = await this.usersRepository.delete(id);
 
-			if (result.affected === 0) {
-				throw new NotFoundException(`User with ID ${id} not found`);
-			}
-			return { message: `User with ID ${id} deleted successfully` };
+		// already handling the not found error here 
+		if (result.affected === 0) {
+			throw new NotFoundException(`User with ID ${id} not found`);
 		}
-		catch (error) {
-			if (error instanceof NotFoundException) {
-				throw new NotFoundException(error.message);
-			}
-			throw error;
-		}
+		return { message: `User with ID ${id} deleted successfully` };
 	}
+		
+	
+		// catch (error) {
+		// 	if (error instanceof NotFoundException) {
+		// 		throw new NotFoundException(error.message);
+		// 	}
+		// 	throw error;
+		// }
+	
 
 
 }

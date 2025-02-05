@@ -33,9 +33,9 @@ export class User {
 	@IsEmail()
 	email: string;
 
-	@Column()
-	@IsNotEmpty()
 	@Exclude()
+	@Column({ select: false })
+	@IsNotEmpty()
 	password: string;
 
 	@Column({ type: 'enum', enum: UserRole, default: UserRole.BUYER })
