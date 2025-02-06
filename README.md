@@ -6,7 +6,7 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 
 - **Authentication & Authorization**
   - JWT-based authentication
-  - Role-based access control (Admin, Author, Buyer)
+  - Role-based access control (Super Admin, Admin, Publisher, Author, Buyer)
 - **User Management**
   - Signup & Login
   - Update/Delete User
@@ -14,9 +14,14 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 - **Book Management**
   - CRUD operations for books
   - Books linked to authors
-- **Order Management** (Future Enhancement)
-  - Users can purchase books
-  - Payment integration (Planned)
+- **Book Reviews Managament**
+  - CRUD operations for reviews
+  - Reviews linked to books and users
+- **Order Management**
+  - Users can create book orders
+  - Users can track their order history
+  - Admins can track all the sales
+  - Authors can track the sales of their books
 
 ## Technologies Used
 
@@ -94,7 +99,7 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 
 ## API Documentation
 
-Comprehensive API documentation is available. Access it here:
+Comprehensive API documentation with saved responses is available. Access it here:
 - [API Documentation](https://documenter.getpostman.com/view/41731674/2sAYX6oMJF)
 
 ### Example API Endpoints
@@ -103,16 +108,22 @@ Comprehensive API documentation is available. Access it here:
 - `POST /auth/signup` - Register a new user
 - `POST /auth/login` - Authenticate and receive a JWT
 
-#### Users
-- `GET /users` - Retrieve all users (Admin only)
+#### Users (Admin only)
+- `GET /users` - Retrieve all users 
+- `GET /users/:id` - Retrieve a user by id
 - `PATCH /users/:id` - Update user details
-- `DELETE /users/:id` - Delete a user
+- `DELETE /users/:id` - Delete a user (Super Admins only)
 
 #### Books
 - `POST /books` - Create a book (Authors only)
 - `GET /books` - Retrieve all books
+- `GET /books/:id` - Retrieve a book by id
+- `GET /books/binding` - Retrieve all binding books
 - `PATCH /books/:id` - Update a book (Author or Admin)
+- `PATCH /books/:id/status` - Update the published status of a book (Publishers)
 - `DELETE /books/:id` - Delete a book (Admin only)
+
+you can view the rest of the endpoints in the [API Documentation](https://documenter.getpostman.com/view/41731674/2sAYX6oMJF)
 
 ## Running with Docker
 
