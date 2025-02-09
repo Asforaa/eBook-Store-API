@@ -40,8 +40,11 @@ The aim of this project is to apply the skills I learn in my NestJS journey.
 
    ```sh
    git clone https://github.com/Asforaa/eBook-Store-API.git
-   cd eBook-Store-API
    ```
+
+```
+cd eBook-Store-API
+```
 
 2. **Install dependencies:**
 
@@ -82,81 +85,118 @@ The aim of this project is to apply the skills I learn in my NestJS journey.
 
    - [Official download link](https://www.postgresql.org/download/)
 
-- **Access the PostgreSQL command-line interface:**
+## Access the PostgreSQL command-line interface:
 
-  For Windows:
-  sh
-  sudo -u postgres psql
+### For Windows:
 
-  For macOS:
-  Ensure PostgreSQL is Installed: If PostgreSQL is not already installed, you can install it using Homebrew.
+```sh
+sudo -u postgres psql
+```
 
-  bash
-  brew install postgresql
+### For macOS:
 
-  Start PostgreSQL Service: Start the PostgreSQL service using Homebrew.
+#### Ensure PostgreSQL is Installed:
 
-  bash
-  brew services start postgresql
+If PostgreSQL is not already installed, you can install it using Homebrew.
 
-  Initialize the Database: Initialize the PostgreSQL database in your current directory. You can specify a directory within your current project to store the database files.
-  bash
-  initdb ./postgres_data
+```bash
+brew install postgresql
+```
 
-  Access PostgreSQL Command-Line Interface: Open the PostgreSQL command-line interface (CLI) using the psql command.
+#### Start PostgreSQL Service:
 
-  bash
-  psql postgres
+Start the PostgreSQL service using Homebrew.
 
-  For Linux:
-  Ensure PostgreSQL is Installed: If PostgreSQL is not already installed, you can install it using your package manager.
+```bash
+brew services start postgresql
+```
 
-  bash
-  sudo apt-get update
-  sudo apt-get install postgresql postgresql-contrib
+#### Initialize the Database:
 
-  Start PostgreSQL Service: Start the PostgreSQL service.
+Initialize the PostgreSQL database in your current directory. You can specify a directory within your current project to store the database files.
 
-  bash
-  sudo service postgresql start
+```bash
+initdb ./postgres_data
+```
 
-  Initialize the Database: Initialize the PostgreSQL database.
+#### Access PostgreSQL Command-Line Interface:
 
-  bash
-  sudo -u postgres initdb -D /var/lib/postgres/data
+Open the PostgreSQL command-line interface (CLI) using the `psql` command.
 
-  Access PostgreSQL Command-Line Interface: Open the PostgreSQL command-line interface (CLI) using the psql command.
+```bash
+psql postgres
+```
 
-  bash
-  sudo -u postgres psql
+### For Linux:
 
-  - **Create the database:**``
+#### Ensure PostgreSQL is Installed:
 
-    sql
-    CREATE DATABASE ebook_store;
+If PostgreSQL is not already installed, you can install it using your package manager.
 
-  - **Verify the database creation:**
+```bash
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+```
 
-    sql
-    \l
+#### Start PostgreSQL Service:
 
-    Ensure that `ebook_store` is listed among the databases.
+Start the PostgreSQL service.
 
-  - **Exit the PostgreSQL CLI:**
-    sql
-    \q
+```bash
+sudo service postgresql start
+```
 
-5. **Run the application:**
-   sh
-   npm run start:dev
+#### Initialize the Database:
 
-Remember, if you don't update the database variables in the `.env` file, you will gett the following error in a repetitive manner:
+Initialize the PostgreSQL database.
 
+```bash
+sudo -u postgres initdb -D /var/lib/postgres/data
+```
+
+#### Access PostgreSQL Command-Line Interface:
+
+Open the PostgreSQL command-line interface (CLI) using the `psql` command.
+
+```bash
+sudo -u postgres psql
+```
+
+## Create the database:
+
+```sql
+CREATE DATABASE ebook_store;
+```
+
+## Verify the database creation:
+
+```sql
+\l
+```
+
+Ensure that `ebook_store` is listed among the databases.
+
+## Exit the PostgreSQL CLI:
+
+```sql
+\q
+```
+
+## Run the application:
+
+```sh
+npm run start:dev
+```
+
+Remember, if you don't update the database variables in the `.env` file, you will get the following error in a repetitive manner:
+
+```
 ERROR [TypeOrmModule] Unable to connect to the database. Retrying...
 
 ERROR [ExceptionHandler] error: role "postgres" does not exist
+```
 
-If you face this issue, stop running the application, by clicking `CTRL + C`.
+If you face this issue, stop running the application by pressing `CTRL + C`.
 
 5. **Run the application:**
    ```sh
