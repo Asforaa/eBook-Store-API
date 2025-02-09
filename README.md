@@ -82,30 +82,81 @@ The aim of this project is to apply the skills I learn in my NestJS journey.
 
    - [Official download link](https://www.postgresql.org/download/)
 
-     - **Access the PostgreSQL command-line interface:**
+- **Access the PostgreSQL command-line interface:**
 
-     ```sh
-     sudo -u postgres psql
-     ```
+  For Windows:
+  sh
+  sudo -u postgres psql
 
-   - **Create the database:**
+  For macOS:
+  Ensure PostgreSQL is Installed: If PostgreSQL is not already installed, you can install it using Homebrew.
 
-     ```sql
-     CREATE DATABASE ebook_store;
-     ```
+  bash
+  brew install postgresql
 
-   - **Verify the database creation:**
+  Start PostgreSQL Service: Start the PostgreSQL service using Homebrew.
 
-     ```sql
-     \l
-     ```
+  bash
+  brew services start postgresql
 
-     Ensure that `ebook_store` is listed among the databases.
+  Initialize the Database: Initialize the PostgreSQL database in your current directory. You can specify a directory within your current project to store the database files.
+  bash
+  initdb ./postgres_data
 
-   - **Exit the PostgreSQL CLI:**
-     ```sql
-     \q
-     ```
+  Access PostgreSQL Command-Line Interface: Open the PostgreSQL command-line interface (CLI) using the psql command.
+
+  bash
+  psql postgres
+
+  For Linux:
+  Ensure PostgreSQL is Installed: If PostgreSQL is not already installed, you can install it using your package manager.
+
+  bash
+  sudo apt-get update
+  sudo apt-get install postgresql postgresql-contrib
+
+  Start PostgreSQL Service: Start the PostgreSQL service.
+
+  bash
+  sudo service postgresql start
+
+  Initialize the Database: Initialize the PostgreSQL database.
+
+  bash
+  sudo -u postgres initdb -D /var/lib/postgres/data
+
+  Access PostgreSQL Command-Line Interface: Open the PostgreSQL command-line interface (CLI) using the psql command.
+
+  bash
+  sudo -u postgres psql
+
+  - **Create the database:**``
+
+    sql
+    CREATE DATABASE ebook_store;
+
+  - **Verify the database creation:**
+
+    sql
+    \l
+
+    Ensure that `ebook_store` is listed among the databases.
+
+  - **Exit the PostgreSQL CLI:**
+    sql
+    \q
+
+5. **Run the application:**
+   sh
+   npm run start:dev
+
+Remember, if you don't update the database variables in the `.env` file, you will gett the following error in a repetitive manner:
+
+ERROR [TypeOrmModule] Unable to connect to the database. Retrying...
+
+ERROR [ExceptionHandler] error: role "postgres" does not exist
+
+If you face this issue, stop running the application, by clicking `CTRL + C`.
 
 5. **Run the application:**
    ```sh
