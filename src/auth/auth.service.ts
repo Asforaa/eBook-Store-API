@@ -2,8 +2,8 @@ import { ConflictException, ForbiddenException, Injectable, UnauthorizedExceptio
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { comparePasswords, hashPassword } from '../common/utils/hash.util';
-import { CreateUserDto } from 'src/users/dtos/createUser.dto';
-import { User, UserRole } from 'src/users/entities/user.entity';
+import { CreateUserDto } from '../users/dtos/createUser.dto';
+import { User, UserRole } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

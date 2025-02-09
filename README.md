@@ -35,12 +35,14 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 ## Installation
 
 1. **Clone the repository:**
+
    ```sh
    git clone https://github.com/Asforaa/eBook-Store-API.git
    cd eBook-Store-API
    ```
 
 2. **Install dependencies:**
+
    ```sh
    npm install
    ```
@@ -48,14 +50,17 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 3. **Set up the environment variables:**
 
    - **Copy the example environment file:**
+
      ```sh
      cp .env.example .env
      ```
 
    - **Generate a JWT secret:**
+
      ```sh
      node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
      ```
+
      Copy the output and use it in the `.env` file.
 
    - **Configure database credentials & JWT secret:**
@@ -72,19 +77,23 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 4. **Create and verify the PostgreSQL database:**
 
    - **Access the PostgreSQL command-line interface:**
+
      ```sh
      sudo -u postgres psql
      ```
 
    - **Create the database:**
+
      ```sql
      CREATE DATABASE ebook_store;
      ```
 
    - **Verify the database creation:**
+
      ```sql
      \l
      ```
+
      Ensure that `ebook_store` is listed among the databases.
 
    - **Exit the PostgreSQL CLI:**
@@ -100,21 +109,25 @@ A simple eBook store backend built with **NestJS**, featuring JWT authentication
 ## API Documentation
 
 Comprehensive API documentation with saved responses is available. Access it here:
+
 - [API Documentation](https://documenter.getpostman.com/view/41731674/2sAYX6oMJF)
 
 ### Example API Endpoints
 
 #### Authentication
+
 - `POST /auth/signup` - Register a new user
 - `POST /auth/login` - Authenticate and receive a JWT
 
 #### Users (Admin only)
-- `GET /users` - Retrieve all users 
+
+- `GET /users` - Retrieve all users
 - `GET /users/:id` - Retrieve a user by id
 - `PATCH /users/:id` - Update user details
 - `DELETE /users/:id` - Delete a user (Super Admins only)
 
 #### Books
+
 - `POST /books` - Create a book (Authors only)
 - `GET /books` - Retrieve all books
 - `GET /books/:id` - Retrieve a book by id
@@ -128,6 +141,7 @@ you can view the rest of the endpoints in the [API Documentation](https://docume
 ## Running with Docker
 
 1. **Build and start the Docker containers:**
+
    ```sh
    docker-compose up --build
    ```
@@ -138,6 +152,7 @@ you can view the rest of the endpoints in the [API Documentation](https://docume
 ## Testing
 
 - **Run unit tests:**
+
   ```sh
   npm run test
   ```
@@ -146,6 +161,60 @@ you can view the rest of the endpoints in the [API Documentation](https://docume
   ```sh
   npm run test:e2e
   ```
+
+---
+
+### Unit Tests Overview
+
+The project contains unit tests for two key services: **AuthService** and **UsersService**. These tests ensure that our authentication logic and user management work as expected under various conditions.
+
+#### AuthService Unit Tests
+
+- **Purpose:**
+  These tests verify the core authentication features, namely user registration (signup) and login.
+
+- **What’s Covered:**
+
+  - **Signup Tests:**
+
+    - Confirm that a new user is registered successfully with their password being hashed.
+    - Ensure that users cannot sign up with a disallowed role (e.g., trying to register as an admin when that isn’t permitted).
+    - Detect duplicate usernames or emails by throwing appropriate conflict errors.
+
+  - **Login Tests:**
+    - Validate that valid credentials return an access token (JWT).
+    - Check that providing an incorrect username or password results in an unauthorized error.
+
+- **Why It Matters:**
+  These tests guarantee that the authentication process securely hashes passwords, generates tokens correctly, and handles common error cases such as duplicate entries or invalid credentials.
+
+#### UsersService Unit Tests
+
+- **Purpose:**
+  These tests focus on user management functions, such as updating user roles, creating new users, retrieving users, and deleting users.
+
+- **What’s Covered:**
+
+  - **Role Update Tests:**
+
+    - Verify that an admin cannot change the role of another admin, ensuring that only authorized users (like super admins) can modify user roles.
+    - Confirm that a super admin can update roles correctly.
+    - Prevent scenarios like demoting a super admin, which are restricted by business rules.
+
+  - **User Creation Tests:**
+
+    - Check that the service detects if a username already exists (to avoid duplicate entries).
+    - Ensure that the password is hashed before a new user is saved, and that the response does not include sensitive password information.
+
+  - **Error Handling Tests:**
+    - Confirm that trying to find a non-existent user throws a "Not Found" error.
+    - Verify that attempting to delete a user who isn’t in the database results in an appropriate error.
+    - Test that when retrieving lists of users, sensitive fields (like the password) are excluded from the output.
+
+- **Why It Matters:**
+  These tests help ensure that user-related operations enforce proper security and business rules. They verify that the application does not allow unauthorized modifications, correctly handles duplicates, and formats user responses safely.
+
+---
 
 ## Contributing
 
@@ -167,4 +236,3 @@ you can view the rest of the endpoints in the [API Documentation](https://docume
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-

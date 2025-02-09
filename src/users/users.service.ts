@@ -4,7 +4,7 @@ import { User, UserRole } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/createUser.dto';
 import { UpdateUserDto } from './dtos/updateUser.dto';
-import { hashPassword } from 'src/common/utils/hash.util';
+import { hashPassword } from '../common/utils/hash.util';
 import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
@@ -16,11 +16,11 @@ export class UsersService {
 
 
 	async updateRole( userId: number, newRole: UserRole, currentUser: User): Promise<User> {
-		
+
 		// can use findoneByOrFail here
 		const targetUser = await this.usersRepository.findOneBy({ id: userId });
 		if (!targetUser) throw new NotFoundException('User not found');
-	
+
 		// Admins can only assign author/publisher roles
 		if (
 		currentUser.role === UserRole.ADMIN &&
@@ -30,17 +30,17 @@ export class UsersService {
 			'Admins can only assign author, publisher or buyer roles',
 		);
 		}
-	
+
 		// Prevent admins from modifying other admins/super_admins
 		if (
-			currentUser.role === UserRole.ADMIN 
+			currentUser.role === UserRole.ADMIN
 			&& [UserRole.ADMIN, UserRole.SUPER_ADMIN].includes(targetUser.role)
 		) {
 		throw new ForbiddenException(
 			'Admins cannot modify roles of other admins or super admins',
 		);
 		}
-	
+
 		// Super admins can assign any role except demoting other super admins
 		if (
 		currentUser.role === UserRole.SUPER_ADMIN &&
@@ -49,11 +49,11 @@ export class UsersService {
 		) {
 		throw new ForbiddenException('Cannot demote a super admin');
 		}
-	
+
 		targetUser.role = newRole;
 		return this.usersRepository.save(targetUser);
 	}
-	
+
 
 	async create(createUserDto: CreateUserDto): Promise<Partial<User>> {
 
@@ -78,7 +78,7 @@ export class UsersService {
 		const existingUser = await this.usersRepository.findOne({
 			where: [{ username: createUserDto.username }, { email: createUserDto.email }],
 		  });
-		
+
 		  if (existingUser) {
 			if (existingUser.username === createUserDto.username) {
 			  throw new ConflictException('Username is already taken');
@@ -139,25 +139,25 @@ export class UsersService {
 	  }
 
 	async remove(id: number): Promise<{message: string}> {
-		
+
 		// removed the try-catch block because its necessary to handle the same error twice
 		const result = await this.usersRepository.delete(id);
 
-		// already handling the not found error here 
+		// already handling the not found error here
 		if (result.affected === 0) {
 			throw new NotFoundException(`User with ID ${id} not found`);
 		}
 		return { message: `User with ID ${id} deleted successfully` };
 	}
-		
-	
+
+
 		// catch (error) {
 		// 	if (error instanceof NotFoundException) {
 		// 		throw new NotFoundException(error.message);
 		// 	}
 		// 	throw error;
 		// }
-	
+
 
 
 }

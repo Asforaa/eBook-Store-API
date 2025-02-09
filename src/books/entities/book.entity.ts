@@ -1,7 +1,7 @@
 // book.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { User } from '../../users/entities/user.entity';
+import { Review } from '../../reviews/entities/review.entity';
 
 export enum BookStatus {
   BINDING = 'binding',
