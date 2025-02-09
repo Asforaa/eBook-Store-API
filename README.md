@@ -78,7 +78,11 @@ The aim of this project is to apply the skills I learn in my NestJS journey.
 
 4. **Create and verify the PostgreSQL database:**
 
-   - **Access the PostgreSQL command-line interface:**
+   - **Download PostgresSQL:**
+
+   - [Official download link](https://www.postgresql.org/download/)
+
+     - **Access the PostgreSQL command-line interface:**
 
      ```sh
      sudo -u postgres psql
