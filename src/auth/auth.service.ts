@@ -1,7 +1,7 @@
 import { ConflictException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { comparePasswords, hashPassword } from 'src/common/utils/hash.util';
+import { comparePasswords, hashPassword } from '../common/utils/hash.util';
 import { CreateUserDto } from 'src/users/dtos/createUser.dto';
 import { User, UserRole } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -37,7 +37,7 @@ export class AuthService {
         } else if (error.detail.includes('email')) {
           throw new ConflictException('Email is already in use');
         } else {
-          
+
         }
       }
 
@@ -53,7 +53,7 @@ export class AuthService {
       where: { username },
       select: ['id', 'username', 'role', 'password'], // Explicitly select 'password'
     });
-    
+
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
