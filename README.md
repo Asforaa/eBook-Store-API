@@ -2,6 +2,8 @@
 
 A simple eBook store backend built with **NestJS**, featuring JWT authentication, role-based API calls, and CRUD operations for users and books.
 
+The aim of this project is to apply the skills I learn in my NestJS journey.
+
 ## Features
 
 - **Authentication & Authorization**
